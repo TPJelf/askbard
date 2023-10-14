@@ -1,0 +1,74 @@
+{
+  "name": "askbard",
+  "displayName": "Ask Bard",
+  "description": "Google AI integration for VSCode",
+  "version": "1.0.0",
+  "icon": "icon_128.jpg",
+  "repository": "https://github.com/TPJelf/askbard",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "askbard.askBard",
+        "title": "Ask Bard for code"
+      },
+      {
+        "command": "askbard.unittestBard",
+        "title": "Ask Bard for unit tests"
+      },
+      {
+        "command": "askbard.openSettings",
+        "title": "Set Ask Bard API key"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "askbard.askBard",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "askbard.unittestBard",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": [
+      {
+        "type": "object",
+        "title": "Bard API Key",
+        "properties": {
+          "askbard.apiKey": {
+            "type": "string",
+            "default": "",
+            "description": "Get it from https://makersuite.google.com/app/apikey"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.2",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.83.0",
+    "@vscode/test-electron": "^2.3.4",
+    "eslint": "^8.50.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@google-ai/generativelanguage": "^1.1.0",
+    "google-auth-library": "^9.1.0"
+  }
+}
