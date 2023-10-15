@@ -3,14 +3,13 @@
 test/**
 .gitignore
 .yarnrc
-vsc-extension-quickstart.md
 **/jsconfig.json
 **/*.map
 **/.eslintrc.json
+package-lock.json
+
 howto_code.gif
 howto_test.gif
 icon_512.jpg
 *.vsix
-
-# Ignore the node_modules directory and all of its contents
-node_modules/
+*.zip

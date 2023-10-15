@@ -7,7 +7,7 @@ It utilizes the free official Google's PaLM API.
 
 ## Features
 - **Google's PaLM LLM Integration**: Generate code snippets from your comments and unit tests based on your code.
-- **Multi-language Support**: Supports various programming languages: JavaScript, TypeScript, Python, Java, C, C++, and C#.
+- **Multi-language Support**: Supports various programming languages: JavaScript, TypeScript, JSX, Python, Java, C, C++, C#, Rust, SQL, PHP.
 - **Easy Configuration**: You only need to set up your API key in the extension settings.
 
 ## Configuration
@@ -44,6 +44,9 @@ Before using Ask Bard, you need to configure your API key:
 ## Release Notes
 ### 1.0.0
 Initial release
+### 1.0.1
+Fixing critical packaging bug that stopped the extension from working (whoops)
+Added support for Rust, SQL, JSX and PHP
 
 ## Feedback and Contributions
 Have a feature request or found a bug? Feel free to [submit an issue](https://github.com/TPJelf/askbard/issues).

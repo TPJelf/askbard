@@ -3,7 +3,6 @@ const { TextServiceClient } = require("@google-ai/generativelanguage").v1beta2;
 const { GoogleAuth } = require("google-auth-library");
 
 function activate(context) {
-
   //Check if API key was configured
   const apiKey = vscode.workspace.getConfiguration().get('askbard.apiKey').trim();
   if (apiKey === "") {
@@ -13,8 +12,8 @@ function activate(context) {
 
   const modelName = "models/text-bison-001";
 
-  const promptRules = ". Use best practices and adhere to a clean and organized code structure. Make sure its easy to understand and provide comments for your code to explain the logic and steps. Please generate the code based on this prompt and ensure it works as described."
-
+  const promptRules = ". Use best practices and adhere to a clean and organized code structure. Don't include tests. Make sure its easy to understand and provide comments for your code to explain the logic and steps. Please generate the code based on this prompt and ensure it works as described."
+  
   function generateText(prompt, editor, selection, errorCallback) {
     
     vscode.window.showInformationMessage('Bard is composing...');
@@ -77,21 +76,26 @@ function activate(context) {
       c: "C",
       cpp: "C++",
       cs: "C#",
+      sql: "SQL",
+      r: "Rust",
+      php: "PHP",
+      jsx: "JSX"
     };
     return languageMap[fileExtension];
   }
-
   // Command: Ask Bard for code 
-  context.subscriptions.push(vscode.commands.registerCommand('askbard.askBard', () => {
-    
+  context.subscriptions.push(vscode.commands.registerCommand('askbard.getCode', () => {
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       const selection = editor.selection;
   
-      // Regex to check for comments
-      // C/C++/C#/Java/javascript single line (//) and multiline (/* */)
+      // Regex to check for comment selection
+      // Javascript style single line (//) and multiline (/* */)
       // Python single line # and multiline (triple quotes)
-      const commentRegex = /(\/\/|\/\*|\/\*{2,}|\*\/|'''|'''\r\n?|"""|"""\r\n?|#)/g;
+      // SQL single line (--)
+      // Rust doc comment (///)
+      // PHP doc comments (/** */)
+      const commentRegex = /(\/\/|\/\*|\/\*{2,}|\*\/|'''|'''\r\n?|"""|"""\r\n?|#|--|\/\/\/)/g;
 
       let prompt = editor.document.getText(selection);
 
@@ -113,7 +117,7 @@ function activate(context) {
   }));
 
   // Command: Ask Bard for unit tests
-  context.subscriptions.push(vscode.commands.registerCommand('askbard.unittestBard', () => {
+  context.subscriptions.push(vscode.commands.registerCommand('askbard.getTest', () => {
     
     const editor = vscode.window.activeTextEditor;
     if (editor) {
@@ -130,11 +134,9 @@ function activate(context) {
   }));
 
   // Open extension settings command
-  context.subscriptions.push(
-    vscode.commands.registerCommand('askbard.openSettings', () => {
-      vscode.commands.executeCommand('workbench.action.openSettings', 'askbard.apiKey');
-    })
-  );
+  context.subscriptions.push(vscode.commands.registerCommand('askbard.openSettings', () => {
+    vscode.commands.executeCommand('workbench.action.openSettings', 'askbard.apiKey');
+  }));
 }
 
 function deactivate() {}

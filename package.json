@@ -2,7 +2,8 @@
   "name": "askbard",
   "displayName": "Ask Bard",
   "description": "Google AI integration for VSCode",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "publisher": "tpjelf",
   "icon": "icon_128.jpg",
   "repository": "https://github.com/TPJelf/askbard",
   "engines": {
@@ -16,11 +17,11 @@
   "contributes": {
     "commands": [
       {
-        "command": "askbard.askBard",
+        "command": "askbard.getCode",
         "title": "Ask Bard for code"
       },
       {
-        "command": "askbard.unittestBard",
+        "command": "askbard.getTest",
         "title": "Ask Bard for unit tests"
       },
       {
@@ -31,11 +32,11 @@
     "menus": {
       "editor/context": [
         {
-          "command": "askbard.askBard",
+          "command": "askbard.getCode",
           "when": "editorHasSelection"
         },
         {
-          "command": "askbard.unittestBard",
+          "command": "askbard.getTest",
           "when": "editorHasSelection"
         }
       ]
@@ -53,19 +54,6 @@
         }
       }
     ]
-  },
-  "scripts": {
-    "lint": "eslint ."
-  },
-  "devDependencies": {
-    "@types/mocha": "^10.0.2",
-    "@types/node": "18.x",
-    "@types/vscode": "^1.83.0",
-    "@vscode/test-electron": "^2.3.4",
-    "eslint": "^8.50.0",
-    "glob": "^10.3.3",
-    "mocha": "^10.2.0",
-    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@google-ai/generativelanguage": "^1.1.0",
