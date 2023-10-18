@@ -43,10 +43,10 @@ To submit a pull request:
 
 ## Style Guidelines
 **Follow VS Code conventions:**
-Camel Case for Variable, Function, Property and Parameter names.
-Pascal Case for Class and Interface names.
-Use 2 spaces for indentation.
-Use UTF-8 encoding for files.
+- Camel Case for Variable, Function, Property and Parameter names.
+- Pascal Case for Class and Interface names.
+- Use 2 spaces for indentation.
+- Use UTF-8 encoding for files.
 
 ## Licensing
 By contributing to this project, you agree that your contributions will be licensed under the project's [MIT License](https://github.com/TPJelf/askbard/blob/main/LICENSE).

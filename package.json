@@ -2,7 +2,7 @@
   "name": "askbard",
   "displayName": "Ask Bard",
   "description": "Google AI integration for VSCode",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "tpjelf",
   "icon": "icon_128.jpg",
   "repository": "https://github.com/TPJelf/askbard",
@@ -10,7 +10,14 @@
     "vscode": "^1.83.0"
   },
   "categories": [
-    "Other"
+    "Snippets",
+    "Machine Learning",
+    "Education"
+  ],
+  "keywords": [
+    "ai",
+    "code-generation",
+    "unit-testing"
   ],
   "activationEvents": [],
   "main": "./extension.js",
@@ -23,6 +30,10 @@
       {
         "command": "askbard.getTest",
         "title": "Ask Bard for unit tests"
+      },      
+      {
+        "command": "askbard.getDocstring",
+        "title": "Ask Bard for docstring"
       },
       {
         "command": "askbard.openSettings",
@@ -37,6 +48,10 @@
         },
         {
           "command": "askbard.getTest",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "askbard.getDocstring",
           "when": "editorHasSelection"
         }
       ]
