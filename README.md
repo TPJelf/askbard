@@ -6,7 +6,12 @@ Ask Bard integrates Google's AI with VSCode to provide AI-generated code.
 It utilizes the free official Google's PaLM API.
 
 ## Features
-- **Google's PaLM 2 LLM Integration**: Generate code snippets from your comments , unit tests based on your code and insert docstrings!
+- **Google's PaLM 2 LLM Integration** will help you: 
+1. Generate code snippets from a comment.
+2. Generate unit tests for a function.
+3. Insert docstrings in functions.
+4. Generate regular expresions from an explanation.
+
 - **Multi-language Support**: Supports various programming languages: JavaScript, TypeScript, JSX, Python, Java, C, C++, C#, Rust, SQL, PHP.
 - **Easy Configuration**: You only need to set up your API key in the extension settings.
 
@@ -38,6 +43,13 @@ Before using Ask Bard, you need to configure your API key:
 
 ![Ask Bard for docstring](https://raw.githubusercontent.com/TPJelf/askbard/main/howto_doc.gif)
 
+#### Generating regular expressions
+1. Select a word or phrase that explains the regex you need.
+2. Right-click and select "Ask Bard for regex" (or use the command palette).
+3. Ask Bard will replace the text with the regex.
+
+![Ask Bard for unit tests](https://raw.githubusercontent.com/TPJelf/askbard/main/howto_regex.gif)
+
 ## Requirements
 - Visual Studio Code version 1.83.0 or higher.
 - A free API key from Google MakerSuite.
@@ -52,11 +64,14 @@ Before using Ask Bard, you need to configure your API key:
 ### 1.0.0
 - Initial release
 ### 1.0.1
-- Fixed critical packaging bug that stopped the extension from working (whoops)
 - Added support for Rust, SQL, JSX and PHP
+- Fixed critical packaging bug that stopped the extension from working (whoops)
 ### 1.0.2
+- Added docstring generation.
 - Typos, phrasing, and minor reformatting.
-- Added docstring generation functionality.
+### 1.0.3
+- Added regex generation.
+- Prompts optimizations.
 
 ## Feedback and Contributions
 Have a feature request or found a bug? Feel free to [submit an issue](https://github.com/TPJelf/askbard/issues).

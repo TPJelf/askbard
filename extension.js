@@ -6,12 +6,13 @@ function activate(context) {
 
   let apiKey = vscode.workspace.getConfiguration().get('askbard.apiKey').trim()
   
-  // Regex to check for comment selection
+  // Regex for comments
   // Javascript style single line (//) and multiline (/* */)
   // Python single line # and multiline (triple quotes)
   // SQL single line (--)
-  // Rust doc comment (///)
-  // PHP doc comments (/** */)
+  // Rust and C# doc comment (///)
+  // PHP and C doc comments (/** */)
+
   const commentRegex = /(\/\/|\/\*|\/\*{2,}|\*\/|'''|'''\r\n?|"""|"""\r\n?|#|--|\/\/\/)/g;
 
   function missingApiKey() {
@@ -24,10 +25,11 @@ function activate(context) {
   }
 
   const modelName = 'models/text-bison-001';
-  
-  function generateText(prompt, editor, selection, replace, errorCallback) {
+
+  // This is the main function that calls the API.
+  function askBard(prompt, editor, selection, replace, errorCallback) {
     vscode.window.showInformationMessage('Bard is composing...');
-    console.log(prompt)
+    console.log('Prompt: ' + prompt)
     const client = new TextServiceClient({
       authClient: new GoogleAuth().fromAPIKey(apiKey),
     });
@@ -40,32 +42,32 @@ function activate(context) {
     })
     .then((result) => {
       // Format response
-      //const outputValue = result[0].candidates[0].output.replace(/`/g, ''); // Remove backticks
       let bardResponse = result[0].candidates[0].output.replace(/`/g, ''); // Remove backticks
-
+      console.log('Lang: ' + editor.document.languageId)
+      console.log('Response: ' + bardResponse)
       // Sometimes the response from the AI comes with the programming language at the beginning
       // Here we try to remove it
-      // Check if the language exists in the first 15 characters
-      const activeLanguage = editor.document.languageId
-      let first15Chars = bardResponse.substring(0, 15);
 
-      // Remove the language from the substring
-      if (first15Chars.includes(activeLanguage)) {
-        first15Chars = first15Chars.replace(activeLanguage, '');
+      const activeLanguage = editor.document.languageId
+      let firstChars = bardResponse.substring(0, 10);
+
+      if (firstChars.includes(activeLanguage)) {
+        firstChars = firstChars.replace(activeLanguage, '');
       }
       else if (activeLanguage == 'csharp') {
-        first15Chars = first15Chars.replace('c#', '');
+        firstChars = firstChars.replace('c#', '');
       }
       else if (activeLanguage == 'javascript') {
-        first15Chars = first15Chars.replace('js', '');
+        firstChars = firstChars.replace('js', '');
       }
       else if (activeLanguage == 'typescript') {
-        first15Chars = first15Chars.replace('ts', '');
+        firstChars = firstChars.replace('ts', '');
       }
       // We also remove a new line that it inserts
-      first15Chars = first15Chars.replace('\n','')
+      firstChars = firstChars.replace('\n','')
+
       // Concatenate the modified substring with the rest of the original string
-      bardResponse = first15Chars + bardResponse.substring(15);
+      bardResponse = firstChars + bardResponse.substring(10);
       
       if(!replace) {
       // Insert response after
@@ -74,8 +76,8 @@ function activate(context) {
         }).then(success => {
             if (success) {
                 const appendedTextEnd = new vscode.Position(
-                    selection.start.line + bardResponse.split('\n').length - 1,
-                    bardResponse.split('\n').slice(-1)[0].length
+                    selection.end.line + bardResponse.split('\n').length,
+                    bardResponse.split('\n').length
                 );
                 editor.selection = new vscode.Selection(selection.end, appendedTextEnd);
               }
@@ -90,7 +92,7 @@ function activate(context) {
             if (success) {
               const newTextEnd = new vscode.Position(
                 selection.start.line + bardResponse.split('\n').length - 1, 
-                bardResponse.split('\n').slice(-1)[0].length
+                bardResponse.split('\n').length
                 );
               editor.selection = new vscode.Selection(selection.start, newTextEnd);
             }
@@ -131,12 +133,12 @@ function activate(context) {
       // Remove comment markers
       prompt = prompt.replace(commentRegex, '')
 
-      const context = ". Use best practices and adhere to a clean and organized code structure. Don't include tests. Make sure its easy to understand and provide comments for your code to explain the logic and steps. Please generate the code based on this prompt and ensure it works as described."
+      const context = ". Use best practices and adhere to a clean and organized code structure. You never reply with tests. Make sure its easy to understand and provide comments for your code to explain the logic and steps. Please generate the code based on this prompt and ensure it works as described."
       
       // Prepare prompt for AI
       prompt = "Using " + editor.document.languageId + " reply with code for " + prompt + context
 
-      generateText(prompt, editor, selection, false, () => {
+      askBard(prompt, editor, selection, false, () => {
         vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, try again rephrasing your comment.")
       })}
   }));
@@ -152,10 +154,10 @@ function activate(context) {
       let prompt = editor.document.getText(selection).trim();
       
       // Prepare prompt for AI
-      prompt = "Reply exclusively with unit tests in " + editor.document.languageId + " for the following code:" + prompt
+      prompt = "Language is " + editor.document.languageId + ". Reply exclusively with best practices unit tests: " + prompt
 
-      generateText(prompt, editor, selection, false, () => {
-        vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, most commonly the selected text is too long or reference to sensitive information.")
+      askBard(prompt, editor, selection, false, () => {
+        vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, most commonly the selected text is too long or references sensitive information.")
       });
     }
   }));
@@ -172,13 +174,34 @@ function activate(context) {
       
       // Prepare prompt for AI
       prompt = prompt.replace(/^[ \t]+/gm, '')
-      prompt = "Programming language is " + editor.document.languageId + ". Repeat this function with a document comment inserted: " + prompt
+      prompt = "Programming language is " + editor.document.languageId + ". Reply with exactly the same function with a document comment inserted: " + prompt
 
-      generateText(prompt, editor, selection, true, () => {
-        vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, most commonly the selected text is too long or reference to sensitive information.")
+      askBard(prompt, editor, selection, true, () => {
+        vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, most commonly the selected text is too long or references sensitive information.")
       });
     }
   }));
+
+  // Command: Ask Bard for regex
+  context.subscriptions.push(vscode.commands.registerCommand('askbard.getRegex', () => {
+  
+    if (missingApiKey()) { return; }
+
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      const selection = editor.selection;
+      let prompt = editor.document.getText(selection).trim();
+
+      // Remove comment markers
+      prompt = prompt.replace(commentRegex, '')
+      // Prepare prompt for AI
+      prompt = "Reply with only a combined regex for the following:" + prompt
+
+      askBard(prompt, editor, selection, true, () => {
+        vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, most commonly the selected text is too long or references sensitive information.")
+      });
+    }
+    }));
 
   // Open extension settings command
   context.subscriptions.push(vscode.commands.registerCommand('askbard.openSettings', () => {

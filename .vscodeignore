@@ -8,8 +8,7 @@ test/**
 **/.eslintrc.json
 package-lock.json
 
-howto_code.gif
-howto_test.gif
+*.gif
 icon_512.jpg
 *.vsix
 *.zip
