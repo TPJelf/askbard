@@ -2,7 +2,7 @@
   "name": "askbard",
   "displayName": "Ask Bard",
   "description": "Google AI integration for VSCode",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "tpjelf",
   "icon": "icon_128.jpg",
   "repository": "https://github.com/TPJelf/askbard",
@@ -40,12 +40,21 @@
         "title": "Ask Bard for regex"
       },
       {
+        "command": "askbard.anything",
+        "title": "Ask Bard anything"
+      },
+      {
         "command": "askbard.openSettings",
         "title": "Set Ask Bard API key"
       }
     ],
     "menus": {
-      "editor/context": [
+      "editor/context":[
+        {
+          "submenu": "askbard"
+        }
+      ],
+      "askbard": [
         {
           "command": "askbard.getCode",
           "when": "editorHasSelection"
@@ -61,9 +70,19 @@
         {
           "command": "askbard.getRegex",
           "when": "editorHasSelection"
+        },
+        {
+          "command": "askbard.anything",
+          "when": "editorHasSelection"
         }
       ]
     },
+    "submenus": [
+      {
+      "id": "askbard",
+      "label": "Ask Bard"
+      }
+    ],
     "configuration": [
       {
         "type": "object",

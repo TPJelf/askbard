@@ -4,8 +4,6 @@ const { GoogleAuth } = require("google-auth-library");
 
 function activate(context) {
 
-  let apiKey = vscode.workspace.getConfiguration().get('askbard.apiKey').trim()
-  
   // Regex for comments
   // Javascript style single line (//) and multiline (/* */)
   // Python single line # and multiline (triple quotes)
@@ -14,6 +12,8 @@ function activate(context) {
   // PHP and C doc comments (/** */)
 
   const commentRegex = /(\/\/|\/\*|\/\*{2,}|\*\/|'''|'''\r\n?|"""|"""\r\n?|#|--|\/\/\/)/g;
+
+  let apiKey
 
   function missingApiKey() {
     apiKey = vscode.workspace.getConfiguration().get('askbard.apiKey').trim()
@@ -29,7 +29,6 @@ function activate(context) {
   // This is the main function that calls the API.
   function askBard(prompt, editor, selection, replace, errorCallback) {
     vscode.window.showInformationMessage('Bard is composing...');
-    console.log('Prompt: ' + prompt)
     const client = new TextServiceClient({
       authClient: new GoogleAuth().fromAPIKey(apiKey),
     });
@@ -43,11 +42,9 @@ function activate(context) {
     .then((result) => {
       // Format response
       let bardResponse = result[0].candidates[0].output.replace(/`/g, ''); // Remove backticks
-      console.log('Lang: ' + editor.document.languageId)
-      console.log('Response: ' + bardResponse)
+      
       // Sometimes the response from the AI comes with the programming language at the beginning
       // Here we try to remove it
-
       const activeLanguage = editor.document.languageId
       let firstChars = bardResponse.substring(0, 10);
 
@@ -55,16 +52,16 @@ function activate(context) {
         firstChars = firstChars.replace(activeLanguage, '');
       }
       else if (activeLanguage == 'csharp') {
-        firstChars = firstChars.replace('c#', '');
+        firstChars = firstChars.replace(/\b'c#'\b/g, '');
       }
       else if (activeLanguage == 'javascript') {
-        firstChars = firstChars.replace('js', '');
+        firstChars = firstChars.replace(/\b'js'\b/g, '');
       }
       else if (activeLanguage == 'typescript') {
-        firstChars = firstChars.replace('ts', '');
+        firstChars = firstChars.replace(/\b'ts'\b/g, '');
       }
       // We also remove a new line that it inserts
-      firstChars = firstChars.replace('\n','')
+      firstChars = firstChars.replace(/\n/g,'')
 
       // Concatenate the modified substring with the rest of the original string
       bardResponse = firstChars + bardResponse.substring(10);
@@ -91,7 +88,7 @@ function activate(context) {
         }).then(success => {
             if (success) {
               const newTextEnd = new vscode.Position(
-                selection.start.line + bardResponse.split('\n').length - 1, 
+                selection.start.line + bardResponse.split('\n').length, 
                 bardResponse.split('\n').length
                 );
               editor.selection = new vscode.Selection(selection.start, newTextEnd);
@@ -198,6 +195,25 @@ function activate(context) {
       prompt = "Reply with only a combined regex for the following:" + prompt
 
       askBard(prompt, editor, selection, true, () => {
+        vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, most commonly the selected text is too long or references sensitive information.")
+      });
+    }
+    }));
+    
+  // Command: Ask Bard anythign
+  context.subscriptions.push(vscode.commands.registerCommand('askbard.anything', () => {
+  
+    if (missingApiKey()) { return; }
+
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      const selection = editor.selection;
+      let prompt = editor.document.getText(selection).trim();
+
+      // Remove comment markers
+      prompt = prompt.replace(commentRegex, '')
+
+      askBard(prompt, editor, selection, false, () => {
         vscode.window.showErrorMessage("Bard filtered the response for undisclosed reasons, most commonly the selected text is too long or references sensitive information.")
       });
     }

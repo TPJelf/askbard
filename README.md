@@ -11,6 +11,7 @@ It utilizes the free official Google's PaLM API.
 2. Generate unit tests for a function.
 3. Insert docstrings in functions.
 4. Generate regular expresions from an explanation.
+5. Ask anything in general.
 
 - **Multi-language Support**: Supports various programming languages: JavaScript, TypeScript, JSX, Python, Java, C, C++, C#, Rust, SQL, PHP.
 - **Easy Configuration**: You only need to set up your API key in the extension settings.
@@ -50,6 +51,14 @@ Before using Ask Bard, you need to configure your API key:
 
 ![Ask Bard for unit tests](https://raw.githubusercontent.com/TPJelf/askbard/main/howto_regex.gif)
 
+#### Asking anything
+Note: This command will forward your selection directly as a prompt.
+1. Select something.
+2. Right-click and select "Ask Bard anything" (or use the command palette).
+3. Ask Bard will reply below the selected text.
+
+![Ask Bard for anything](https://raw.githubusercontent.com/TPJelf/askbard/main/howto_anything.gif)
+
 ## Requirements
 - Visual Studio Code version 1.83.0 or higher.
 - A free API key from Google MakerSuite.
@@ -72,6 +81,9 @@ Before using Ask Bard, you need to configure your API key:
 ### 1.0.3
 - Added regex generation.
 - Prompts optimizations.
+### 1.0.4
+- Added Ask Bard anything.
+- Grouped context menu commands.
 
 ## Feedback and Contributions
 Have a feature request or found a bug? Feel free to [submit an issue](https://github.com/TPJelf/askbard/issues).
