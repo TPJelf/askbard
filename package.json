@@ -2,7 +2,7 @@
   "name": "askbard",
   "displayName": "Ask Bard",
   "description": "Google AI integration for VSCode",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "publisher": "tpjelf",
   "icon": "icon_128.jpg",
   "repository": "https://github.com/TPJelf/askbard",
@@ -19,7 +19,7 @@
     "code-generation",
     "unit-testing"
   ],
-  "activationEvents": [],
+  "activationEvents": ["onStartupFinished"],
   "main": "./extension.js",
   "contributes": {
     "commands": [
@@ -40,12 +40,16 @@
         "title": "Ask Bard for regex"
       },
       {
-        "command": "askbard.anything",
+        "command": "askbard.getAnything",
         "title": "Ask Bard anything"
       },
       {
-        "command": "askbard.openSettings",
+        "command": "askbard.setApiKey",
         "title": "Set Ask Bard API key"
+      },
+      {
+        "command": "askbard.enableGetCompletion",
+        "title": "Enable Ask Bard completions"
       }
     ],
     "menus": {
@@ -72,7 +76,7 @@
           "when": "editorHasSelection"
         },
         {
-          "command": "askbard.anything",
+          "command": "askbard.getAnything",
           "when": "editorHasSelection"
         }
       ]
@@ -94,7 +98,19 @@
             "description": "Get it from https://makersuite.google.com/app/apikey"
           }
         }
+      },
+      {
+        "type": "object",
+        "title": "Enable AI completions",
+        "properties": {
+          "askbard.getCompletion": {
+            "type": "boolean",
+            "default": "true",
+            "description": "Will provide a completion after a new line."
+          }
+        }
       }
+
     ]
   },
   "dependencies": {

@@ -12,3 +12,4 @@ package-lock.json
 icon_512.jpg
 *.vsix
 *.zip
+*.code-workspace
