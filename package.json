@@ -2,7 +2,7 @@
   "name": "askbard",
   "displayName": "Ask Bard",
   "description": "Google AI integration for VSCode",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "tpjelf",
   "icon": "icon_128.jpg",
   "repository": "https://github.com/TPJelf/askbard",

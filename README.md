@@ -95,6 +95,10 @@ Can be disabled via settings.
 
 ## Release Notes
 
+### 1.1.1
+
+- Bugfixes
+
 ### 1.1.0
 
 - Added automatic completions per popular request ❤️ Its not Copilot yet but its elegant enough.

@@ -109,7 +109,9 @@ function activate(context) {
   async function askBard(prompt, editor, silent = false) {
     return new Promise((resolve, reject) => {
       if (silent) {
-        generateText(prompt, editor, resolve, reject);
+        async () => {
+          await generateText(prompt, editor, resolve, reject);
+        };
       } else {
         vscode.window.withProgress(
           {
@@ -259,7 +261,9 @@ function activate(context) {
       if (editor) {
         const selection = editor.selection;
         let prompt = editor.document.getText(selection).trim();
-        prompt = 'Reply with only a combined regex for the following:' + prompt;
+        prompt =
+          'Reply with a single and comprehensive regular expression for the following:' +
+          prompt;
 
         try {
           const bardResponse = await askBard(prompt, editor);
