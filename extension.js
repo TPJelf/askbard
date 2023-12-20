@@ -1,6 +1,5 @@
 const vscode = require('vscode');
-const { TextServiceClient } = require('@google-ai/generativelanguage').v1beta2;
-const { GoogleAuth } = require('google-auth-library');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 function activate(context) {
   let apiKey;
@@ -69,21 +68,12 @@ function activate(context) {
 
   // This is the main function that calls the API.
   async function generateText(prompt, editor, resolve, reject) {
-    const client = new TextServiceClient({
-      authClient: new GoogleAuth().fromAPIKey(apiKey),
-    });
-    const modelName = 'models/text-bison-001';
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     try {
-      const result = await client.generateText({
-        model: modelName,
-        prompt: {
-          text: prompt,
-        },
-      });
-
-      let bardResponse = result[0].candidates[0].output.replace(/`/g, ''); // Remove backticks
-
+      const result = await model.generateContent(prompt);
+      let bardResponse = result.response.text().replace(/`/g, ''); // Remove backticks
       const activeLanguage = editor.document.languageId;
       let firstChars = bardResponse.substring(0, 10);
 
@@ -109,9 +99,7 @@ function activate(context) {
   async function askBard(prompt, editor, silent = false) {
     return new Promise((resolve, reject) => {
       if (silent) {
-        async () => {
-          await generateText(prompt, editor, resolve, reject);
-        };
+        generateText(prompt, editor, resolve, reject);
       } else {
         vscode.window.withProgress(
           {
@@ -138,16 +126,13 @@ function activate(context) {
         const selection = editor.selection;
         let prompt = editor.document.getText(selection).trim();
 
-        const context =
-          '. Use best practices and adhere to a clean and organized code structure. You never reply with tests. Make sure its easy to understand and provide comments for your code to explain the logic and steps. Please generate the code based on this prompt and ensure it works as described.';
-
         // Prepare prompt for AI
         prompt =
-          'Using ' +
+          'Languague is ' +
           editor.document.languageId +
-          ' reply with code for ' +
+          '. Reply with code for ' +
           prompt +
-          context;
+          '. Use best practices and adhere to a clean and organized code structure. You never reply with tests. Make sure its easy to understand and provide programming comments for your code to explain the logic and steps.';
 
         try {
           const bardResponse = await askBard(prompt, editor);
@@ -319,7 +304,8 @@ function activate(context) {
     }
   );
 
-  // Ask bard dynamic completions class
+  // Automatic completions
+  // Dynamic completions class
   class DynamicCompletionItemProvider {
     provideCompletionItems(document, position) {
       let getCompletionTimeout = null;
@@ -372,23 +358,24 @@ function activate(context) {
     }
   }
 
-  // Completions enabling logic
+  // Enabling logic
   function updateGetCompletionSubscription() {
-    let getCompletion;
+    let getCompletion = vscode.languages.registerCompletionItemProvider(
+      { language: '*', scheme: 'file' },
+      new DynamicCompletionItemProvider(),
+      '\n'
+    );
     if (vscode.workspace.getConfiguration().get('askbard.getCompletion')) {
-      getCompletion = vscode.languages.registerCompletionItemProvider(
-        { language: '*', scheme: 'file' },
-        new DynamicCompletionItemProvider(),
-        '\n'
-      );
       context.subscriptions.push(getCompletion);
     } else {
       getCompletion.dispose();
     }
   }
 
+  // Initial setup
   updateGetCompletionSubscription();
 
+  // Setting watcher
   vscode.workspace.onDidChangeConfiguration((changeEvent) => {
     if (changeEvent.affectsConfiguration('askbard.getCompletion')) {
       updateGetCompletionSubscription();
@@ -422,7 +409,11 @@ function activate(context) {
     enableGetCompletion
   );
 
-  vscode.window.showInformationMessage('Bard is ready');
+  if (
+    !vscode.workspace.getConfiguration().get('askbard.disableReadyNotification')
+  ) {
+    vscode.window.showInformationMessage('Bard is ready');
+  }
 }
 
 function deactivate() {

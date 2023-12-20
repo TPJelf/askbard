@@ -3,11 +3,11 @@
 ![Ask Bard Icon](https://raw.githubusercontent.com/TPJelf/askbard/main/icon_512.jpg)
 
 Ask Bard integrates Google's AI with VSCode to provide AI-generated code.
-It utilizes the free official Google's PaLM API.
+It utilizes the free official Google's Gemini Pro API.
 
 ## Features
 
-- **Google's PaLM 2 LLM Integration** will help you:
+- **Google's Gemini Pro LLM Integration** will help you:
 
 1. Generate code snippets.
 2. Generate unit tests.
@@ -88,16 +88,23 @@ Can be disabled via settings.
 
 - `askbard.apiKey`: Here goes your API key.
 - `askbard.getCompletion`: Enable / disable automatic completions.
+- `askbard.disableReadyNotification`: Enable / disable "Bard is ready" notification.
 
 ## Known Issues
 
-- No known issues.
+- Interface is not dynamic enough. UX overhaul in the works.
 
 ## Release Notes
 
+### 1.2.0
+
+- Updated to Gemini Pro.
+- Added notification setting.
+- Bugfixes.
+
 ### 1.1.1
 
-- Bugfixes
+- Bugfixes.
 
 ### 1.1.0
 
@@ -128,7 +135,7 @@ Can be disabled via settings.
 
 ### 1.0.0
 
-- Initial release
+- Initial release.
 
 ## Feedback and Contributions
 

@@ -2,7 +2,7 @@
   "name": "askbard",
   "displayName": "Ask Bard",
   "description": "Google AI integration for VSCode",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "publisher": "tpjelf",
   "icon": "icon_128.jpg",
   "repository": "https://github.com/TPJelf/askbard",
@@ -19,7 +19,9 @@
     "code-generation",
     "unit-testing"
   ],
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
@@ -30,7 +32,7 @@
       {
         "command": "askbard.getTest",
         "title": "Ask Bard for unit tests"
-      },      
+      },
       {
         "command": "askbard.getDocstring",
         "title": "Ask Bard for docstring"
@@ -53,7 +55,7 @@
       }
     ],
     "menus": {
-      "editor/context":[
+      "editor/context": [
         {
           "submenu": "askbard"
         }
@@ -83,8 +85,8 @@
     },
     "submenus": [
       {
-      "id": "askbard",
-      "label": "Ask Bard"
+        "id": "askbard",
+        "label": "Ask Bard"
       }
     ],
     "configuration": [
@@ -109,12 +111,21 @@
             "description": "Will provide a completion after a new line."
           }
         }
+      },
+      {
+        "type": "object",
+        "title": "Disable 'Bard is ready' notification",
+        "properties": {
+          "askbard.disableReadyNotification": {
+            "type": "boolean",
+            "default": "false",
+            "description": "Disable 'Bard is ready' successful extension initialization notification"
+          }
+        }
       }
-
     ]
   },
   "dependencies": {
-    "@google-ai/generativelanguage": "^1.1.0",
-    "google-auth-library": "^9.1.0"
+    "@google/generative-ai": "^0.1.3"
   }
 }
