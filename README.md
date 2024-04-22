@@ -1,3 +1,6 @@
+# Google released their [official version](https://marketplace.visualstudio.com/items?itemName=GoogleCloudTools.cloudcode)
+# I'm going to archive this project. It was fun. <3
+
 # Ask Bard - Google AI Integration for VSCode
 
 ![Ask Bard Icon](https://raw.githubusercontent.com/TPJelf/askbard/main/icon_512.jpg)
